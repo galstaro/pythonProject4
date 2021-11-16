@@ -4,19 +4,20 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 import random
 from time import sleep
+from sheet import AOS_Sheet
 
 class home_page:
     def __init__(self,driver:webdriver):
         self.driver=driver
         self.wait=WebDriverWait(self.driver,10)
+        self.sheet=AOS_Sheet()
 
-    def category(self):
-        categories_elements=self.driver.find_elements(By.CSS_SELECTOR,".rowSection>div")
-        categories_elements.remove(categories_elements[2])
-        return categories_elements
+    def category(self,test_number,product_number):
+        categories_element=self.driver.find_element(By.ID,f"{self.sheet.get_Category(test_number,product_number)}Img")
+        return categories_element
 
-    def click_category(self):
-        random.choice(self.category()).click()
+    def click_category(self,test_number,product_number):
+        self.category(test_number,product_number).click()
 
     def user_emoji(self):
         return self.driver.find_element(By.ID,"menuUserLink")
@@ -95,9 +96,26 @@ class home_page:
     def click_remove(self):
         self.remove()[0].click()
 
-
     def len_of_products_in_Cart(self):
         return len(self.driver.find_elements(By.CSS_SELECTOR,"table>tbody>tr"))
+
+    def total_items_in_cart(self):
+        string_of_items = self.driver.find_element(By.CSS_SELECTOR, "td>span>label").text
+        number_of_items = ""
+        for w in string_of_items:
+            if w.isnumeric():
+                number_of_items += w
+        return number_of_items
+
+    def text_in_home(self):
+        text=self.driver.find_element(By.CSS_SELECTOR,"#special_offer_items>h3")
+        return text.text
+
+    def click_checkout(self):
+        checkout = self.driver.find_element(By.ID, "checkOutPopUp")
+        checkout.click()
+
+
 
 
 
