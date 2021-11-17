@@ -12,12 +12,11 @@ class shopping_cart_page:
         self.wait = WebDriverWait(self.driver, 10)
 
     def title(self):
-        title=self.driver.find_element(By.CSS_SELECTOR,"[class='roboto-regular center sticky fixedImportant ng-binding']")
+        title=self.driver.find_element(By.CLASS_NAME,"select")
         return title
 
     def title_text_shopping_cart(self):
-        text=self.title().text
-        return text[:13]
+        return self.title().text
 
     def text_price(self):
         total_price_elements=self.driver.find_elements(By.CLASS_NAME,"cart-total")
@@ -42,6 +41,7 @@ class shopping_cart_page:
         self.checkout().click()
 
     def shopping_cart_empty(self):
+        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[translate='Your_shopping_cart_is_empty']")))
         return self.driver.find_element(By.CSS_SELECTOR, "[translate='Your_shopping_cart_is_empty']")
 
     def quantities_in_cart(self):

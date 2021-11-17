@@ -33,7 +33,7 @@ class product_page:
     def change_quantity(self):
         self.quantity().click()
         self.quantity().send_keys(Keys.BACK_SPACE)
-        quantity=random.randint(1,6)
+        quantity=random.randint(1,4)
         self.quantity().send_keys(f"{quantity}")
         return quantity
 

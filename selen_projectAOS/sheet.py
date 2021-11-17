@@ -119,15 +119,15 @@ class AOS_Sheet:
         self.sheet["H1"] = "Test 6"
         self.sheet["H2"] = "mice"
         self.sheet["H3"] = 30
-        self.sheet["H4"] = 1
+        self.sheet["H4"] = 6
         self.sheet["H5"] = "PURPLE"
         self.sheet["H6"] = "speakers"
         self.sheet["H7"] = 25
-        self.sheet["H8"] = 2
+        self.sheet["H8"] = 5
         self.sheet["H9"] = "TURQUOISE"
         self.sheet["H10"] = "laptops"
         self.sheet["H11"] = 7
-        self.sheet["H12"] = 3
+        self.sheet["H12"] = 8
         self.sheet["H13"] = "GRAY"
 
         self.sheet["I1"] = "Test 7"
@@ -164,9 +164,9 @@ class AOS_Sheet:
         self.sheet["K3"] = 31
         self.sheet["K4"] = 1
         self.sheet["K5"] = "BLACK"
-        self.sheet["K6"] = "laptops"
-        self.sheet["K7"] = 9
-        self.sheet["K8"] = 3
+        self.sheet["K6"] = "headphones"
+        self.sheet["K7"] = 15
+        self.sheet["K8"] = 1
         self.sheet["K9"] = "BLACK"
         self.sheet["K10"] = "laptops"
         self.sheet["K11"] = 9

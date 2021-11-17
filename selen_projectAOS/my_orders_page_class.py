@@ -11,10 +11,12 @@ class my_orders_page:
         self.driver=driver
         self.wait = WebDriverWait(self.driver, 10)
 
-    def tracking_numbers(self):
-        elements=self.driver.find_elements(By.CSS_SELECTOR, "[data-ng-repeat-start='order in myOrdersCtrl.orders track by $index'']>td>label")
-        tracking_numbers=[]
+    def order_numbers(self):
+        elements=self.driver.find_elements(By.CSS_SELECTOR, "tr[data-ng-repeat-start='order in myOrdersCtrl.orders track by $index']>td>label")
+        order_numbers=[]
         for i in elements:
-            if i.text.isalnum():
-                tracking_numbers.append(i.text)
-        return tracking_numbers
+            if i.text.isalnum() and len(i.text)>1:
+                order_numbers.append(i.text)
+        order_numbers=set(order_numbers)
+        order_numbers=list(order_numbers)
+        return order_numbers

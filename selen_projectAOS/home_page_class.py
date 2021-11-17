@@ -30,16 +30,16 @@ class home_page:
     def username(self):
         return self.driver.find_element(By.NAME,"username")
 
-    def enter_username(self):
+    def enter_username(self,username):
         self.username().clear()
-        self.username().send_keys('elad1234')
+        self.username().send_keys(username)
 
     def password(self):
         return self.driver.find_element(By.NAME,"password")
 
-    def enter_password(self):
+    def enter_password(self,password):
         self.password().clear()
-        self.password().send_keys('Thbyrby145')
+        self.password().send_keys(password)
 
     def sign_in(self):
         return self.driver.find_element(By.ID,"sign_in_btnundefined")
@@ -108,9 +108,10 @@ class home_page:
                 number_of_items += w
         return number_of_items
 
-    def text_in_home(self):
-        text=self.driver.find_element(By.CSS_SELECTOR,"#special_offer_items>h3")
-        return text.text
+    def check_if_page_is_home(self):
+        if EC.invisibility_of_element_located((By.CSS_SELECTOR,"[translate='HOME']")):
+            return True
+        return False
 
     def click_checkout(self):
         checkout = self.driver.find_element(By.ID, "checkOutPopUp")
@@ -120,8 +121,21 @@ class home_page:
         return self.driver.find_elements(By.CSS_SELECTOR,"[translate='My_Orders']")
 
     def click_my_orders(self):
-        sleep(3.5)
+        self.wait.until_not(EC.visibility_of_element_located((By.CSS_SELECTOR, "[translate='Your_shopping_cart_is_empty']")))
         self.my_orders()[1].click()
+
+    def check_if_the_use_sign(self):
+        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")))
+        text = self.driver.find_elements(By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")
+        if len(text) == 1:
+            return True
+
+    def check_if_the_use_NOT_sign(self):
+        self.wait.until(
+            EC.invisibility_of_element_located((By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")))
+        text = self.driver.find_elements(By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")
+        if len(text) == 0:
+            return True
 
 
 

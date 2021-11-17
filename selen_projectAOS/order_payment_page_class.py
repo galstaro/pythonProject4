@@ -29,6 +29,7 @@ class order_payment_page:
         return self.driver.find_element(By.NAME, "safepay_username")
 
     def enter_safe_pay_username(self):
+        self.wait.until(EC.visibility_of_element_located((By.NAME, "safepay_username")))
         self.safe_pay_username().send_keys("Asdfg")
 
     def safe_pay_password(self):
@@ -44,6 +45,7 @@ class order_payment_page:
         self.pay_now().click()
 
     def completed_payment(self):
+        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[translate='Thank_you_for_buying_with_Advantage']")))
         return self.driver.find_element(By.CSS_SELECTOR, "[translate='Thank_you_for_buying_with_Advantage']")
 
     def click_login(self):
@@ -101,8 +103,8 @@ class order_payment_page:
         CVV_element = self.CVV_number()
         CVV_element.clear()
         CVV_element.send_keys(cvv_number)
-        #CVV_element.clear()
-        #CVV_element.send_keys(cvv_number)
+        CVV_element.clear()
+        CVV_element.send_keys(cvv_number)
         holder_element = self.card_holder_name()
         holder_element.clear()
         holder_element.send_keys(holder_name)
@@ -118,8 +120,8 @@ class order_payment_page:
         edit = self.driver.find_element(By.CLASS_NAME, "edit")
         edit.click()
 
-    def tracking_number(self):
-        self.wait.until(EC.visibility_of_element_located((By.ID,"trackingNumberLabel")))
-        return self.driver.find_element(By.ID,"trackingNumberLabel")
+    def order_number(self):
+        self.wait.until(EC.visibility_of_element_located((By.ID,"orderNumberLabel")))
+        return self.driver.find_element(By.ID,"orderNumberLabel")
 
 
