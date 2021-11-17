@@ -1,4 +1,5 @@
 dic={1:20,2:99,3:78,4:99,5:130,6:20,7:45,8:78,9:10}
+
 s=list(dic.values())
 print(s)
 s1 = list(dic.items())
