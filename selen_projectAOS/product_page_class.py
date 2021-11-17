@@ -7,12 +7,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from time import sleep
 from sheet import AOS_Sheet
 
-
 class product_page:
     def __init__(self,driver):
         self.driver=driver
         self.wait=WebDriverWait(self.driver,10)
-        self.sheet=AOS_Sheet()
+        self.sheet = AOS_Sheet()
 
     def add_to_cart(self):
         add_to_cart_element=self.driver.find_element(By.NAME,"save_to_cart")
@@ -34,7 +33,9 @@ class product_page:
     def change_quantity(self):
         self.quantity().click()
         self.quantity().send_keys(Keys.BACK_SPACE)
-        self.quantity().send_keys(f"{random.randint(1,10)}")
+        quantity=random.randint(1,6)
+        self.quantity().send_keys(f"{quantity}")
+        return quantity
 
 
     def colors(self,test_number,product_number):

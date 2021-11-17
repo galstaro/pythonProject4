@@ -11,6 +11,7 @@ from time import sleep
 class order_payment_page:
     def __init__(self, driver):
         self.driver = driver
+        self.wait = WebDriverWait(self.driver, 10)
 
     def registration(self):
         return self.driver.find_element(By.ID, "registration_btnundefined")
@@ -93,12 +94,15 @@ class order_payment_page:
         return self.driver.find_element(By.NAME, "cardholder_name")
 
     def fill_master_card_details(self, card_number, cvv_number, holder_name, mm, yyyy):
+        self.wait.until(EC.visibility_of_element_located((By.NAME, "card_number")))
         card_num_element = self.card_number()
         card_num_element.send_keys(Keys.DELETE)
         card_num_element.send_keys(card_number)
         CVV_element = self.CVV_number()
         CVV_element.clear()
         CVV_element.send_keys(cvv_number)
+        #CVV_element.clear()
+        #CVV_element.send_keys(cvv_number)
         holder_element = self.card_holder_name()
         holder_element.clear()
         holder_element.send_keys(holder_name)
@@ -106,11 +110,16 @@ class order_payment_page:
         self.date_year().select_by_index(yyyy)
 
     def click_pay_now_master_card(self):
+        self.wait.until(EC.visibility_of_element_located((By.ID, "pay_now_btn_ManualPayment")))
         pay_now = self.driver.find_element(By.ID, "pay_now_btn_ManualPayment")
         pay_now.click()
 
     def click_edit(self):
         edit = self.driver.find_element(By.CLASS_NAME, "edit")
         edit.click()
+
+    def tracking_number(self):
+        self.wait.until(EC.visibility_of_element_located((By.ID,"trackingNumberLabel")))
+        return self.driver.find_element(By.ID,"trackingNumberLabel")
 
 

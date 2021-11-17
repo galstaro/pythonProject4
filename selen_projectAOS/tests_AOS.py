@@ -14,6 +14,7 @@ from product_page_class import product_page
 from shopping_cart_page_class import shopping_cart_page
 from order_payment_page_class import order_payment_page
 from create_account_page_class import create_account_page
+from my_orders_page_class import my_orders_page
 from unittest import TestCase
 from sheet import AOS_Sheet
 from selenium.common import exceptions
@@ -27,13 +28,14 @@ class tests_AOS(TestCase):
         self.driver.maximize_window()
         self.driver.implicitly_wait(10)
         self.wait=WebDriverWait(self.driver,10)
-        self.sheet = AOS_Sheet()
-        self.home=home_page(self.driver,)
+        self.home=home_page(self.driver)
         self.category=category_page(self.driver)
         self.product=product_page(self.driver)
         self.shopping_cart_page = shopping_cart_page(self.driver)
         self.order_payment=order_payment_page(self.driver)
         self.create_account=create_account_page(self.driver)
+        self.my_orders=my_orders_page(self.driver)
+        self.sheet = AOS_Sheet()
 
     def tearDown(self):
         sleep(2)
@@ -83,7 +85,7 @@ class tests_AOS(TestCase):
         for i in range(3):
             exept_price += qu[i] * price[i]
         self.assertListEqual(self.home.colors_in_cart(),co)
-        self.sheet.add_pass_or_fail(1, round(exept_price,2) == self.home.price())
+        self.sheet.add_pass_or_fail(2, round(exept_price,2) == self.home.price())
         self.assertEqual(round(exept_price,2),self.home.price())
 
     def test3(self):
@@ -145,21 +147,24 @@ class tests_AOS(TestCase):
             self.product.click_back_to_home()
         self.home.click_shopping_cart_window()
         edits=self.shopping_cart_page.edit()
-        for edit in edits:
-            self.wait.until_not(EC.element_to_be_clickable((By.ID, "checkOutPopUp")))
-            staleElement = True
-            while staleElement:
-                try:
-                    self.wait.until(EC.visibility_of_element_located((By.LINK_TEXT,"EDIT")))
-                    edit.click()
-                    staleElement = False
-
-                except exceptions.StaleElementReferenceException as e:
-                    staleElement = True
-
+        before_change_quantities=self.shopping_cart_page.quantities_in_cart()
+        for x in range(len(edits)):
+            edits=self.shopping_cart_page.edit()
+            edits[x].click()
             self.product.change_quantity()
             self.product.click_add_to_cart()
             self.home.click_shopping_cart_window()
+            sleep(10)
+        pass_or_fail=True
+        after_change_quantities = self.shopping_cart_page.quantities_in_cart()
+        print(before_change_quantities)
+        print(after_change_quantities)
+        for i in range(len(after_change_quantities)):
+            if before_change_quantities[i]==after_change_quantities[i]:
+                pass_or_fail=False
+                break
+        self.sheet.add_pass_or_fail(6,pass_or_fail)
+        self.assertTrue(pass_or_fail)
 
     def test7(self):
         self.home.click_category(7,1)
@@ -168,6 +173,7 @@ class tests_AOS(TestCase):
         self.assertEqual(self.category.category_title(),"TABLETS")
         self.driver.back()
         self.assertEqual(self.home.text_in_home(),"SPECIAL OFFER")
+        self.sheet.add_pass_or_fail(7,self.home.text_in_home()=="SPECIAL OFFER")
 
     def test8(self):
         for i in range(3):
@@ -196,7 +202,14 @@ class tests_AOS(TestCase):
         self.assertTrue(self.order_payment.completed_payment().is_displayed())
         self.home.click_shopping_cart_window()
         self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[translate='Your_shopping_cart_is_empty']")))
+        self.sheet.add_pass_or_fail(8, self.shopping_cart_page.shopping_cart_empty().is_displayed())
         self.assertTrue(self.shopping_cart_page.shopping_cart_empty().is_displayed())
+        tracking_number_inorder_payment=self.order_payment.tracking_number().text
+        self.home.user_emoji_click()
+        self.home.click_my_orders()
+        self.assertTrue(tracking_number_inorder_payment in self.my_orders.tracking_numbers())
+
+
 
     def test9(self):
         for i in range(3):
@@ -213,16 +226,18 @@ class tests_AOS(TestCase):
         self.order_payment.click_next()
         self.order_payment.click_master_credit()
         self.order_payment.click_edit()
-        self.wait.until(EC.visibility_of_element_located((By.NAME, "card_number")))
-        self.order_payment.fill_master_card_details("123456789123", "432", "elad-ratner", "2", "4")
-        self.wait.until(EC.visibility_of_element_located((By.ID, "pay_now_btn_ManualPayment")))
+        self.order_payment.fill_master_card_details("123456789123","432", "elad-ratner", "2", "4")
         self.order_payment.click_pay_now_master_card()
         self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[translate='Thank_you_for_buying_with_Advantage']")))
         self.assertTrue(self.order_payment.completed_payment().is_displayed())
+        tracking_number_inorder_payment = self.order_payment.tracking_number().text
         self.home.click_shopping_cart_window()
         self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR, "[translate='Your_shopping_cart_is_empty']")))
+        self.sheet.add_pass_or_fail(9, self.shopping_cart_page.shopping_cart_empty().is_displayed())
         self.assertTrue(self.shopping_cart_page.shopping_cart_empty().is_displayed())
-
+        self.home.user_emoji_click()
+        self.home.click_my_orders()
+        self.assertTrue(tracking_number_inorder_payment in self.my_orders.tracking_numbers())
 
 
 

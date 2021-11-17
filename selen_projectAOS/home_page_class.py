@@ -6,6 +6,7 @@ import random
 from time import sleep
 from sheet import AOS_Sheet
 
+
 class home_page:
     def __init__(self,driver:webdriver):
         self.driver=driver
@@ -114,6 +115,14 @@ class home_page:
     def click_checkout(self):
         checkout = self.driver.find_element(By.ID, "checkOutPopUp")
         checkout.click()
+
+    def my_orders(self):
+        return self.driver.find_elements(By.CSS_SELECTOR,"[translate='My_Orders']")
+
+    def click_my_orders(self):
+        sleep(3.5)
+        self.my_orders()[1].click()
+
 
 
 

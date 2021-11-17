@@ -1,9 +1,11 @@
+import openpyxl
 from openpyxl import Workbook
 import json
 
 class AOS_Sheet:
     def __init__(self):
         self.workbook = Workbook()
+        self.workbook=openpyxl.load_workbook("Tests_AOS.xlsx")
         self.sheet = self.workbook.active
 
 

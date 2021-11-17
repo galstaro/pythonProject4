@@ -6,11 +6,12 @@ import random
 from time import sleep
 from sheet import AOS_Sheet
 
+
 class category_page:
     def __init__(self,driver):
         self.driver=driver
         self.wait=WebDriverWait(self.driver,10)
-        self.sheet=AOS_Sheet()
+        self.sheet = AOS_Sheet()
 
     def products(self,test_number,product_number):
         products_element=self.driver.find_element(By.ID,f"{self.sheet.get_Product_ID(test_number,product_number)}")
