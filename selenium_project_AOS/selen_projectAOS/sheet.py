@@ -157,9 +157,9 @@ class AOS_Sheet:
         self.sheet["J11"] = 15
         self.sheet["J12"] = 1
         self.sheet["J13"] = "BLACK"
-        self.sheet["J16"] = "ga12347"
-        self.sheet["J17"] = "ga12l@gmail.com"
-        self.sheet["J18"] = "ga2341"
+        self.sheet["J16"] = "Ga22347"
+        self.sheet["J17"] = "Ga22l@gmail.com"
+        self.sheet["J18"] = "Ga3341"
         self.sheet["J19"] = "eg12345678"
         self.sheet["J20"] = "Eg2345"
 
@@ -191,7 +191,7 @@ class AOS_Sheet:
         self.workbook.save(filename="Tests_AOS.xlsx")
         self.workbook.close()
 
-    def xl_to_json(self):
+    def xl_to_json_products(self):
         tests={}
         subjects=[self.sheet["A2"].value,self.sheet["A6"].value,self.sheet["A10"].value]
         products_details={}
@@ -296,12 +296,12 @@ class AOS_Sheet:
         mail = self.sheet[f"{tests[test_number - 1] + '17'}"].value
         return mail
 
-    def get_new_paypal_username(self,test_number):
+    def get_new_safepay_username(self,test_number):
         tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
         username = self.sheet[f"{tests[test_number - 1] + '19'}"].value
         return username
 
-    def get_new_paypal_password(self,test_number):
+    def get_new_safepay_password(self,test_number):
         tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
         password = self.sheet[f"{tests[test_number - 1] + '20'}"].value
         return password
@@ -337,10 +337,4 @@ class AOS_Sheet:
 
 
 
-if __name__=="__main__":
-    x=AOS_Sheet()
-    x.xl_to_json()
-    x.get_Category(3,1)
-    x.get_Quantity(3,1)
-    x.get_Color(3,1)
-    x.get_Product_ID(3,1)
+

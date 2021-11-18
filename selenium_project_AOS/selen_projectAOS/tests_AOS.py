@@ -1,12 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from time import sleep
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-import random
 from home_page_class import home_page
 from category_page_class import category_page
 from product_page_class import product_page
@@ -44,6 +39,7 @@ class tests_AOS(TestCase):
     # Test 1- choose 3 products by different quantities and check if the cart was updated
     def test1(self):
         total_items=0
+        # add 3 products to the cart
         for i in range(3):
             self.home.click_category(1,i+1)
             self.category.click_product(1,i+1)
@@ -51,6 +47,7 @@ class tests_AOS(TestCase):
             total_items+=quantity
             self.product.click_add_to_cart()
             self.product.click_back_to_home()
+        # save the number of items which is presented in the cart window
         number_of_items = self.home.total_items_in_cart()
         # add pass_or_fail method insert to the xl sheet the result of the test
         self.sheet.add_pass_or_fail(1, total_items == int(number_of_items))
@@ -63,6 +60,7 @@ class tests_AOS(TestCase):
         colors=[]
         names=[]
         prices=[]
+        # add 3 products and save their details in lists for each detail
         for i in range(3):
             self.home.click_category(2, i + 1)
             self.category.click_product(2, i + 1)
@@ -76,6 +74,7 @@ class tests_AOS(TestCase):
             prices.append(float(price))
             self.product.click_add_to_cart()
             self.product.click_back_to_home()
+        # each list need to be reversed because the products are presented from the first product to the last
         names.reverse()
         # Check if the products names equal to the names in the shopping cart window
         self.sheet.add_pass_or_fail(2, names==self.home.names_in_cart())
@@ -90,22 +89,26 @@ class tests_AOS(TestCase):
         self.sheet.add_pass_or_fail(2, self.home.colors_in_cart()==colors)
         self.assertListEqual(self.home.colors_in_cart(), colors)
         expected_price = 0.0
+        # calculate the total price by quantity and price of each item
         for i in range(3):
             expected_price += quantities[i] * prices[i]
         # Check if the products total price equal to the total price in the shopping cart window
-        self.sheet.add_pass_or_fail(2, round(expected_price, 2) == self.home.price())
-        self.assertEqual(round(expected_price,2),self.home.price())
+        self.sheet.add_pass_or_fail(2, round(expected_price, 2) == self.home.total_price())
+        self.assertEqual(round(expected_price,2),self.home.total_price())
 
     # Test 3 - check if remove button in shopping cart window actually works
     def test3(self):
+        # add 3 products to the cart
         for i in range(3):
             self.home.click_category(3, i + 1)
             self.category.click_product(3, i + 1)
             self.product.click_add_to_cart()
             self.product.click_back_to_home()
-
+        # save the number of different products
         number_of_products=self.home.len_of_products_in_Cart()
+        # remove one product
         self.home.click_remove()
+        # save the number of different products after delete
         number_products_after_remove=self.home.len_of_products_in_Cart()
         self.sheet.add_pass_or_fail(3, number_of_products == number_products_after_remove+1)
         # Check if the number of products before remove one is greater than after remove one in one product difference
@@ -113,6 +116,7 @@ class tests_AOS(TestCase):
 
     # Test 4 - check if you click on cart item shopping cart page is opened
     def test4(self):
+        # add one product to cart
         self.home.click_category(4, 1)
         self.category.click_product(4, 1)
         self.product.click_add_to_cart()
@@ -128,6 +132,7 @@ class tests_AOS(TestCase):
         quantities = []
         names = []
         prices = []
+        # add 3 products and save their details in lists for each detail
         for i in range(3):
             self.home.click_category(5,i + 1)
             self.category.click_product(5,i+1)
@@ -137,12 +142,15 @@ class tests_AOS(TestCase):
             names.append(product_name)
             price = self.product.price()
             prices.append(float(price))
+            # print the details of the product
             print(f"name: {product_name}, quantity: {quantity}, price: {float(price)}")
             self.product.click_add_to_cart()
             self.product.click_back_to_home()
         self.home.click_shopping_cart_window()
+        # save the total price which is presented in the shopping cart
         total_price=self.shopping_cart_page.price()
         expected_price=0.0
+        # calculate the total price by quantity and price of each item
         for i in range(3):
             expected_price += quantities[i] * prices[i]
         print(expected_price,total_price)
@@ -277,22 +285,22 @@ class tests_AOS(TestCase):
 
     # Test 10- check login and logout processes
     def test10(self):
-        username = self.sheet.get_exist_username(10)
-        password = self.sheet.get_exist_password(10)
+        username = self.home.get_exist_username(10)
+        password = self.home.get_exist_password(10)
         # log in to site with exist user
         self.home.user_emoji_click()
         self.home.enter_username(username)
         self.home.enter_password(password)
         self.home.sign_in_click()
         # check if the username equals to the text near user item in the top of the page
-        self.sheet.add_pass_or_fail(10,self.home.check_if_the_use_sign())
-        self.assertTrue(self.home.check_if_the_use_sign())
+        self.sheet.add_pass_or_fail(10,self.home.check_if_the_user_sign())
+        self.assertTrue(self.home.check_if_the_user_sign())
         # sign out from site
         self.home.user_emoji_click()
         self.home.click_sign_out()
         # check if user logged out
-        self.sheet.add_pass_or_fail(10,self.home.check_if_the_use_NOT_sign())
-        self.assertTrue(self.home.check_if_the_use_NOT_sign())
+        self.sheet.add_pass_or_fail(10,self.home.check_if_the_user_NOT_sign())
+        self.assertTrue(self.home.check_if_the_user_NOT_sign())
 
 
 

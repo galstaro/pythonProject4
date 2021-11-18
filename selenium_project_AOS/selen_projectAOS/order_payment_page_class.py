@@ -32,13 +32,13 @@ class order_payment_page:
 
     def enter_safe_pay_username(self,test_number):
         self.wait.until(EC.visibility_of_element_located((By.NAME, "safepay_username")))
-        self.safe_pay_username().send_keys(self.sheet.get_new_paypal_username(test_number))
+        self.safe_pay_username().send_keys(self.sheet.get_new_safepay_username(test_number))
 
     def safe_pay_password(self):
         return self.driver.find_element(By.NAME, "safepay_password")
 
     def enter_safe_pay_password(self,test_number):
-        self.safe_pay_password().send_keys(self.sheet.get_new_paypal_password(test_number))
+        self.safe_pay_password().send_keys(self.sheet.get_new_safepay_password(test_number))
 
     def pay_now(self):
         return self.driver.find_element(By.ID, "pay_now_btn_SAFEPAY")
@@ -125,5 +125,6 @@ class order_payment_page:
     def order_number(self):
         self.wait.until(EC.visibility_of_element_located((By.ID,"orderNumberLabel")))
         return self.driver.find_element(By.ID,"orderNumberLabel")
+
 
 
