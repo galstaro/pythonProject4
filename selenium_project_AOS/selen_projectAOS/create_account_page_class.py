@@ -5,11 +5,13 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 import random
 from time import sleep
+from sheet import AOS_Sheet
 
 class create_account_page:
     def __init__(self,driver):
         self.driver=driver
         self.wait=WebDriverWait(self.driver,10)
+        self.sheet=AOS_Sheet()
 
     def username(self):
         return self.driver.find_element(By.NAME, "usernameRegisterPage")
@@ -23,17 +25,17 @@ class create_account_page:
     def confirm_password(self):
         return self.driver.find_element(By.NAME, "confirm_passwordRegisterPage")
 
-    def enter_username(self):
-        self.username().send_keys("sdhgd123164")
+    def enter_username(self,test_number):
+        self.username().send_keys(self.sheet.get_new_username(test_number))
 
-    def enter_password(self):
-        self.password().send_keys("As0984")
+    def enter_password(self,test_number):
+        self.password().send_keys(self.sheet.get_new_password(test_number))
 
-    def enter_email(self):
-        self.email().send_keys("sdhF11624@gmail.com")
+    def enter_email(self,test_number):
+        self.email().send_keys(self.sheet.get_new_mail(test_number))
 
-    def enter_confirm_password(self):
-        self.confirm_password().send_keys("As0984")
+    def enter_confirm_password(self,test_number):
+        self.confirm_password().send_keys(self.sheet.get_new_password(test_number))
 
     def conditions_of_use_agreement(self):
         return self.driver.find_element(By.NAME, "i_agree")

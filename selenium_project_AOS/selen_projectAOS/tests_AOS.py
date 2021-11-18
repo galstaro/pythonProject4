@@ -7,7 +7,6 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import random
-import locale
 from home_page_class import home_page
 from category_page_class import category_page
 from product_page_class import product_page
@@ -17,7 +16,6 @@ from create_account_page_class import create_account_page
 from my_orders_page_class import my_orders_page
 from unittest import TestCase
 from sheet import AOS_Sheet
-from selenium.common import exceptions
 
 
 class tests_AOS(TestCase):
@@ -54,11 +52,10 @@ class tests_AOS(TestCase):
             self.product.click_add_to_cart()
             self.product.click_back_to_home()
         number_of_items = self.home.total_items_in_cart()
+        # add pass_or_fail method insert to the xl sheet the result of the test
+        self.sheet.add_pass_or_fail(1, total_items == int(number_of_items))
         # Check if the total of items that we added to cart equal to the total items in shopping cart window.
         self.assertEqual(total_items, int(number_of_items))
-        if total_items==int(number_of_items):
-            # add pass_or_fail method insert to the xl sheet the result of the test
-            self.sheet.add_pass_or_fail(1,1)
 
     # Test2 - check if products details which we added to cart have the same details in the shopping cart window.
     def test2(self):
@@ -81,19 +78,22 @@ class tests_AOS(TestCase):
             self.product.click_back_to_home()
         names.reverse()
         # Check if the products names equal to the names in the shopping cart window
+        self.sheet.add_pass_or_fail(2, names==self.home.names_in_cart())
         self.assertListEqual(names,self.home.names_in_cart())
         quantities.reverse()
         # Check if the products quantities equal to the quantities in the shopping cart window
+        self.sheet.add_pass_or_fail(2, quantities==self.home.quantities_in_cart())
         self.assertListEqual(quantities,self.home.quantities_in_cart())
         colors.reverse()
         prices.reverse()
         # Check if the products colors equal to the colors in the shopping cart window
+        self.sheet.add_pass_or_fail(2, self.home.colors_in_cart()==colors)
         self.assertListEqual(self.home.colors_in_cart(), colors)
         expected_price = 0.0
         for i in range(3):
             expected_price += quantities[i] * prices[i]
         # Check if the products total price equal to the total price in the shopping cart window
-        self.sheet.add_pass_or_fail(2, round(expected_price,2) == self.home.price())
+        self.sheet.add_pass_or_fail(2, round(expected_price, 2) == self.home.price())
         self.assertEqual(round(expected_price,2),self.home.price())
 
     # Test 3 - check if remove button in shopping cart window actually works
@@ -119,8 +119,8 @@ class tests_AOS(TestCase):
         self.product.click_back_to_home()
         self.home.click_shopping_cart_window()
         text=self.shopping_cart_page.title_text_shopping_cart()
-        self.sheet.add_pass_or_fail(4, text=='SHOPPING CART')
         # Check if the title of the page equals to "SHOPPING CART"
+        self.sheet.add_pass_or_fail(4, text == 'SHOPPING CART')
         self.assertEqual(text,'SHOPPING CART')
 
     # Test 5 - check if the products total price equal to the total price in the shopping cart window
@@ -148,8 +148,8 @@ class tests_AOS(TestCase):
         print(expected_price,total_price)
         total_price=float(total_price)
         total_price=round(total_price,2)
-        self.sheet.add_pass_or_fail(5, round(expected_price,2) == total_price)
         # Check if the products total price equal to the total price in the shopping cart window
+        self.sheet.add_pass_or_fail(5, round(expected_price, 2) == total_price)
         self.assertEqual(round(expected_price,2),total_price)
 
     # Test 6- add 3 products to cart and click edit to change there quantities and check if they were updated
@@ -179,7 +179,7 @@ class tests_AOS(TestCase):
             if before_change_quantities[i]==after_change_quantities[i]:
                 pass_or_fail=False
                 break
-        self.sheet.add_pass_or_fail(6,pass_or_fail)
+        self.sheet.add_pass_or_fail(6, pass_or_fail)
         self.assertTrue(pass_or_fail)
 
     # Test 7- add tablet product to the cart and the path to the product
@@ -189,11 +189,12 @@ class tests_AOS(TestCase):
         self.category.click_product(7,1)
         self.driver.back()
         # check if the driver took us to Tablets
+        self.sheet.add_pass_or_fail(7, self.category.category_title() == "TABLETS")
         self.assertEqual(self.category.category_title(),"TABLETS")
         self.driver.back()
         # check if the driver took us to home page
+        self.sheet.add_pass_or_fail(7, self.home.check_if_page_is_home())
         self.assertTrue(self.home.check_if_page_is_home())
-        self.sheet.add_pass_or_fail(7,self.home.check_if_page_is_home())
 
     # Test 8 - E2E test of the AOS site
     def test8(self):
@@ -208,30 +209,32 @@ class tests_AOS(TestCase):
         self.shopping_cart_page.click_checkout()
         # register to site with new account
         self.order_payment.click_registration()
-        self.create_account.enter_username()
-        self.create_account.enter_email()
-        self.create_account.enter_password()
-        self.create_account.enter_confirm_password()
+        self.create_account.enter_username(8)
+        self.create_account.enter_email(8)
+        self.create_account.enter_password(8)
+        self.create_account.enter_confirm_password(8)
         self.create_account.click_conditions_of_use_agreement()
         self.create_account.click_register()
         self.order_payment.click_next()
         # connect to Safe pay account
-        self.order_payment.enter_safe_pay_username()
-        self.order_payment.enter_safe_pay_password()
+        self.order_payment.enter_safe_pay_username(8)
+        self.order_payment.enter_safe_pay_password(8)
         # pay for the products
         self.order_payment.click_pay_now()
         order_number_inorder_payment = self.order_payment.order_number().text
         # check payment is completed
+        self.sheet.add_pass_or_fail(8, self.order_payment.completed_payment().is_displayed())
         self.assertTrue(self.order_payment.completed_payment().is_displayed())
         self.home.click_shopping_cart_window()
         # check shopping cart is empty
+        self.sheet.add_pass_or_fail(8, self.shopping_cart_page.shopping_cart_empty().is_displayed())
         self.assertTrue(self.shopping_cart_page.shopping_cart_empty().is_displayed())
         self.home.user_emoji_click()
         self.home.click_my_orders()
         print(order_number_inorder_payment)
         print(self.my_orders.order_numbers())
         # check if the order number is in my orders
-        self.sheet.add_pass_or_fail(8,order_number_inorder_payment in self.my_orders.order_numbers())
+        self.sheet.add_pass_or_fail(8, order_number_inorder_payment in self.my_orders.order_numbers())
         self.assertTrue(order_number_inorder_payment in self.my_orders.order_numbers())
 
     # Test9 - E2E existing user using Master card account
@@ -246,45 +249,51 @@ class tests_AOS(TestCase):
         self.home.click_shopping_cart_window()
         self.home.click_checkout()
         # login to user
-        self.order_payment.enter_username("elad1234")
-        self.order_payment.enter_password("Thbyrby145")
+        self.order_payment.enter_username(9)
+        self.order_payment.enter_password(9)
         self.order_payment.click_login()
         self.order_payment.click_next()
         # insert Master Card account details
         self.order_payment.click_master_credit()
         self.order_payment.click_edit()
-        self.order_payment.fill_master_card_details("123456789123","432", "elad-ratner", "2", "4")
+        self.order_payment.fill_master_card_details(9)
         # pay for order
         self.order_payment.click_pay_now_master_card()
         # check order is completed
+        self.sheet.add_pass_or_fail(9,self.order_payment.completed_payment().is_displayed())
         self.assertTrue(self.order_payment.completed_payment().is_displayed())
         order_number_inorder_payment = self.order_payment.order_number().text
         self.home.click_shopping_cart_window()
         # check shopping cart window is empty
+        self.sheet.add_pass_or_fail(9,self.shopping_cart_page.shopping_cart_empty().is_displayed())
         self.assertTrue(self.shopping_cart_page.shopping_cart_empty().is_displayed())
         self.home.user_emoji_click()
         self.home.click_my_orders()
         print(order_number_inorder_payment)
         print(self.my_orders.order_numbers())
         # check order number is in my orders
+        self.sheet.add_pass_or_fail(9, order_number_inorder_payment in self.my_orders.order_numbers())
         self.assertTrue(order_number_inorder_payment in self.my_orders.order_numbers())
 
     # Test 10- check login and logout processes
     def test10(self):
-        username = 'elad1234'
-        password = 'Thbyrby145'
+        username = self.sheet.get_exist_username(10)
+        password = self.sheet.get_exist_password(10)
         # log in to site with exist user
         self.home.user_emoji_click()
         self.home.enter_username(username)
         self.home.enter_password(password)
         self.home.sign_in_click()
         # check if the username equals to the text near user item in the top of the page
+        self.sheet.add_pass_or_fail(10,self.home.check_if_the_use_sign())
         self.assertTrue(self.home.check_if_the_use_sign())
         # sign out from site
         self.home.user_emoji_click()
         self.home.click_sign_out()
         # check if user logged out
+        self.sheet.add_pass_or_fail(10,self.home.check_if_the_use_NOT_sign())
         self.assertTrue(self.home.check_if_the_use_NOT_sign())
+
 
 
 

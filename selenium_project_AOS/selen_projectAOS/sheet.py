@@ -8,8 +8,7 @@ class AOS_Sheet:
         self.workbook=openpyxl.load_workbook("Tests_AOS.xlsx")
         self.sheet = self.workbook.active
 
-
-
+        self.sheet.title="Tests_AOS"
         self.sheet["A2"]='Product1'
         self.sheet["A6"]='Product2'
         self.sheet["A10"]='Product3'
@@ -158,6 +157,11 @@ class AOS_Sheet:
         self.sheet["J11"] = 15
         self.sheet["J12"] = 1
         self.sheet["J13"] = "BLACK"
+        self.sheet["J16"] = "ga12347"
+        self.sheet["J17"] = "ga12l@gmail.com"
+        self.sheet["J18"] = "ga2341"
+        self.sheet["J19"] = "eg12345678"
+        self.sheet["J20"] = "Eg2345"
 
         self.sheet["K1"] = "Test 9"
         self.sheet["K2"] = "mice"
@@ -172,13 +176,23 @@ class AOS_Sheet:
         self.sheet["K11"] = 9
         self.sheet["K12"] = 2
         self.sheet["K13"] = "WHITE"
+        self.sheet["K14"] = "elad1234"
+        self.sheet["K15"] = "Thbyrby145"
+        self.sheet["K21"] = "123456789123"
+        self.sheet["K22"] = "123"
+        self.sheet["K23"] = "2"
+        self.sheet["K24"] = "3"
+        self.sheet["K25"] = "elad-gal"
 
+        self.sheet["L1"] = "Test 10"
+        self.sheet["L14"] = "elad1234"
+        self.sheet["L15"] = "Thbyrby145"
 
         self.workbook.save(filename="Tests_AOS.xlsx")
         self.workbook.close()
 
     def xl_to_json(self):
-        self.tests={}
+        tests={}
         subjects=[self.sheet["A2"].value,self.sheet["A6"].value,self.sheet["A10"].value]
         products_details={}
         for column in self.sheet.iter_cols(1,11,1,13,True):
@@ -197,9 +211,9 @@ class AOS_Sheet:
                     }
                     x+=4
                     products_details[i]=detail
-                 self.tests[test_number]=products_details
+                 tests[test_number]=products_details
 
-        print(json.dumps(self.tests,indent=4))
+        print(json.dumps(tests,indent=4))
 
     def get_Category(self,test_number,product_number):
         tests=["C","D","E","F","G","H","I","J","K"]
@@ -238,7 +252,7 @@ class AOS_Sheet:
             return quantity
 
     def get_Color(self,test_number,product_number):
-        tests=["C","D","E","F","G","H","I","J","K"]
+        tests=["C","D","E","F","G","H","I","J","K","L"]
         if product_number == 1:
             color = self.sheet[f"{tests[test_number-1] + '5'}"].value
             return color
@@ -250,12 +264,74 @@ class AOS_Sheet:
             return color
 
     def add_pass_or_fail(self,test_number,boo):
-        tests = ["C", "D", "E", "F", "G", "H", "I", "J","K"]
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J","K","L"]
         if boo:
             self.sheet[f"{tests[test_number-1] + '26'}"]="V"
         else:
             self.sheet[f"{tests[test_number - 1] + '26'}"] = "X"
         self.workbook.save(filename="Tests_AOS.xlsx")
+
+    def get_exist_username(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        username = self.sheet[f"{tests[test_number - 1] + '14'}"].value
+        return username
+
+    def get_exist_password(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        password = self.sheet[f"{tests[test_number - 1] + '15'}"].value
+        return password
+
+    def get_new_username(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        username = self.sheet[f"{tests[test_number - 1] + '16'}"].value
+        return username
+
+    def get_new_password(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        password = self.sheet[f"{tests[test_number - 1] + '18'}"].value
+        return password
+
+    def get_new_mail(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        mail = self.sheet[f"{tests[test_number - 1] + '17'}"].value
+        return mail
+
+    def get_new_paypal_username(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        username = self.sheet[f"{tests[test_number - 1] + '19'}"].value
+        return username
+
+    def get_new_paypal_password(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        password = self.sheet[f"{tests[test_number - 1] + '20'}"].value
+        return password
+
+    def get_card_number(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        card_number = self.sheet[f"{tests[test_number - 1] + '21'}"].value
+        return card_number
+
+    def get_CVV(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        cvv = self.sheet[f"{tests[test_number - 1] + '22'}"].value
+        return cvv
+
+    def get_holder_name(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        holder_name = self.sheet[f"{tests[test_number - 1] + '25'}"].value
+        return holder_name
+
+    def get_MM(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        MM = self.sheet[f"{tests[test_number - 1] + '23'}"].value
+        return MM
+
+    def get_YYYY(self,test_number):
+        tests = ["C", "D", "E", "F", "G", "H", "I", "J", "K", "L"]
+        YYYY = self.sheet[f"{tests[test_number - 1] + '24'}"].value
+        return YYYY
+
+
 
 
 

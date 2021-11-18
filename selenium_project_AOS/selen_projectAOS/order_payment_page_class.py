@@ -6,12 +6,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 import random
 from time import sleep
+from sheet import AOS_Sheet
 
 
 class order_payment_page:
     def __init__(self, driver):
         self.driver = driver
         self.wait = WebDriverWait(self.driver, 10)
+        self.sheet = AOS_Sheet()
 
     def registration(self):
         return self.driver.find_element(By.ID, "registration_btnundefined")
@@ -28,15 +30,15 @@ class order_payment_page:
     def safe_pay_username(self):
         return self.driver.find_element(By.NAME, "safepay_username")
 
-    def enter_safe_pay_username(self):
+    def enter_safe_pay_username(self,test_number):
         self.wait.until(EC.visibility_of_element_located((By.NAME, "safepay_username")))
-        self.safe_pay_username().send_keys("Asdfg")
+        self.safe_pay_username().send_keys(self.sheet.get_new_paypal_username(test_number))
 
     def safe_pay_password(self):
         return self.driver.find_element(By.NAME, "safepay_password")
 
-    def enter_safe_pay_password(self):
-        self.safe_pay_password().send_keys("0987ASDg")
+    def enter_safe_pay_password(self,test_number):
+        self.safe_pay_password().send_keys(self.sheet.get_new_paypal_password(test_number))
 
     def pay_now(self):
         return self.driver.find_element(By.ID, "pay_now_btn_SAFEPAY")
@@ -56,21 +58,21 @@ class order_payment_page:
         username = self.driver.find_element(By.NAME, "usernameInOrderPayment")
         return username
 
-    def enter_username(self, name):
+    def enter_username(self, test_number):
         username = self.username()
         username.click()
         username.clear()
-        username.send_keys(name)
+        username.send_keys(self.sheet.get_exist_username(test_number))
 
     def password(self):
         password = self.driver.find_element(By.NAME, "passwordInOrderPayment")
         return password
 
-    def enter_password(self, passw):
+    def enter_password(self, test_number):
         password = self.password()
         password.click()
         password.clear()
-        password.send_keys(passw)
+        password.send_keys(self.sheet.get_exist_password(test_number))
 
     def click_next(self):
         next = self.driver.find_element(By.ID, "next_btn")
@@ -95,21 +97,21 @@ class order_payment_page:
     def card_holder_name(self):
         return self.driver.find_element(By.NAME, "cardholder_name")
 
-    def fill_master_card_details(self, card_number, cvv_number, holder_name, mm, yyyy):
+    def fill_master_card_details(self,test_number):
         self.wait.until(EC.visibility_of_element_located((By.NAME, "card_number")))
         card_num_element = self.card_number()
         card_num_element.send_keys(Keys.DELETE)
-        card_num_element.send_keys(card_number)
+        card_num_element.send_keys(self.sheet.get_card_number(test_number))
         CVV_element = self.CVV_number()
         CVV_element.clear()
-        CVV_element.send_keys(cvv_number)
+        CVV_element.send_keys(self.sheet.get_CVV(test_number))
         CVV_element.clear()
-        CVV_element.send_keys(cvv_number)
+        CVV_element.send_keys(self.sheet.get_CVV(test_number))
         holder_element = self.card_holder_name()
         holder_element.clear()
-        holder_element.send_keys(holder_name)
-        self.date_mounth().select_by_index(mm)
-        self.date_year().select_by_index(yyyy)
+        holder_element.send_keys(self.sheet.get_holder_name(test_number))
+        self.date_mounth().select_by_index(self.sheet.get_MM(test_number))
+        self.date_year().select_by_index(self.sheet.get_YYYY(test_number))
 
     def click_pay_now_master_card(self):
         self.wait.until(EC.visibility_of_element_located((By.ID, "pay_now_btn_ManualPayment")))
