@@ -43,7 +43,7 @@ class create_account_page:
 
     # enter_confirm_password call confirm_password and insert password from sheet
     def enter_confirm_password(self,test_number):
-        self.confirm_password().send_keys(self.sheet.get_new_password(test_number))
+        self.confirm_password().send_keys(self.sheet.get_new_password_to_confirm(test_number))
 
     # conditions_of_use_agreement returns element of conditions_of_use_agreement
     def conditions_of_use_agreement(self):

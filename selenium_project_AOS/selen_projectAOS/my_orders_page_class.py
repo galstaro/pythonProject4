@@ -7,10 +7,13 @@ import random
 from time import sleep
 
 class my_orders_page:
+
+    # define driver and wait
     def __init__(self,driver):
         self.driver=driver
         self.wait = WebDriverWait(self.driver, 10)
 
+    # return a list of all the numbers of the orders
     def order_numbers(self):
         elements=self.driver.find_elements(By.CSS_SELECTOR, "tr[data-ng-repeat-start='order in myOrdersCtrl.orders track by $index']>td>label")
         order_numbers=[]

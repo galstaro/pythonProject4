@@ -76,6 +76,7 @@ class home_page:
 
     # names_in_cart returns the products names in shopping cart window
     def names_in_cart(self):
+        self.wait.until(EC.visibility_of_element_located((By.CSS_SELECTOR,"table>tbody>tr[id='product']>td>a>h3")))
         names_elements=self.driver.find_elements(By.CSS_SELECTOR,"table>tbody>tr[id='product']>td>a>h3")
         products_names=[]
         for products_name in names_elements:
@@ -170,19 +171,11 @@ class home_page:
 
     # check if user logged out returns true or false
     def check_if_the_user_NOT_sign(self):
-        # self.wait.until(
-        #     EC.invisibility_of_element_located((By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")))
-        # text = self.driver.find_elements(By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")
-        # if len(text) == 0:
-        #     return True
-        # return False
-        try:
-            self.wait.until(EC.invisibility_of_element_located((By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")))
+        self.wait.until(EC.invisibility_of_element_located((By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")))
+        text = self.driver.find_elements(By.CSS_SELECTOR, "[class='hi-user containMiniTitle ng-binding']")
+        if len(text) == 0:
             return True
-        except:
-            print("False")
-
-
+        return False
 
     # get test number and returns the username which returned from self.sheet.get_exist_username()
     def get_exist_username(self, test_number):

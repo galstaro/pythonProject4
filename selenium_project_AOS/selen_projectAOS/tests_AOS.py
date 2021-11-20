@@ -14,6 +14,8 @@ from sheet import AOS_Sheet
 
 
 class tests_AOS(TestCase):
+
+    # define a driver, wait, pages-objects and enter into AOS site
     def setUp(self):
         print("setUp")
         service1 = Service(r"C:\chromedriver_win32/chromedriver")
@@ -31,6 +33,7 @@ class tests_AOS(TestCase):
         self.my_orders=my_orders_page(self.driver)
         self.sheet = AOS_Sheet()
 
+    # close the driver
     def tearDown(self):
         sleep(2)
         self.driver.close()
@@ -74,7 +77,7 @@ class tests_AOS(TestCase):
             prices.append(float(price))
             self.product.click_add_to_cart()
             self.product.click_back_to_home()
-        # each list need to be reversed because the products are presented from the first product to the last
+    # each list need to be reversed because the products are presented from the first product to the last
         names.reverse()
         # Check if the products names equal to the names in the shopping cart window
         self.sheet.add_pass_or_fail(2, names==self.home.names_in_cart())
@@ -89,7 +92,7 @@ class tests_AOS(TestCase):
         self.sheet.add_pass_or_fail(2, self.home.colors_in_cart()==colors)
         self.assertListEqual(self.home.colors_in_cart(), colors)
         expected_price = 0.0
-        # calculate the total price by quantity and price of each item
+        # calculate the total price by quantity and price of each product
         for i in range(3):
             expected_price += quantities[i] * prices[i]
         # Check if the products total price equal to the total price in the shopping cart window
@@ -116,7 +119,7 @@ class tests_AOS(TestCase):
 
     # Test 4 - check if you click on cart item shopping cart page is opened
     def test4(self):
-        # add one product to cart
+        # add one product
         self.home.click_category(4, 1)
         self.category.click_product(4, 1)
         self.product.click_add_to_cart()
@@ -147,10 +150,10 @@ class tests_AOS(TestCase):
             self.product.click_add_to_cart()
             self.product.click_back_to_home()
         self.home.click_shopping_cart_window()
-        # save the total price which is presented in the shopping cart
+        # save the total price which is presented in the shopping cart page
         total_price=self.shopping_cart_page.price()
         expected_price=0.0
-        # calculate the total price by quantity and price of each item
+        # calculate the total price by quantity and price of each product
         for i in range(3):
             expected_price += quantities[i] * prices[i]
         print(expected_price,total_price)
@@ -264,7 +267,11 @@ class tests_AOS(TestCase):
         # insert Master Card account details
         self.order_payment.click_master_credit()
         self.order_payment.click_edit()
-        self.order_payment.fill_master_card_details(9)
+        self.order_payment.fill_card_number(9)
+        self.order_payment.fill_CVV(9)
+        self.order_payment.fill_holder_name(9)
+        self.order_payment.fill_MM(9)
+        self.order_payment.fill_YYYY(9)
         # pay for order
         self.order_payment.click_pay_now_master_card()
         # check order is completed
@@ -301,7 +308,6 @@ class tests_AOS(TestCase):
         # check if user logged out
         self.sheet.add_pass_or_fail(10,self.home.check_if_the_user_NOT_sign())
         self.assertTrue(self.home.check_if_the_user_NOT_sign())
-
 
 
 
